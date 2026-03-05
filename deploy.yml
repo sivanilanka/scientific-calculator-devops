@@ -1,0 +1,17 @@
+- hosts: localhost
+  become: yes
+  tasks:
+
+    - name: Pull Docker Image
+      command: docker pull sivanilanka/scientific-calculator:latest
+
+    - name: Stop existing container
+      command: docker stop scientific-calculator
+      ignore_errors: yes
+
+    - name: Remove container
+      command: docker rm scientific-calculator
+      ignore_errors: yes
+
+    - name: Run container
+      command: docker run -it --name scientific-calculator sivanilanka/scientific-calculator:latest
