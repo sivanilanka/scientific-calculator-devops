@@ -24,6 +24,12 @@ pipeline {
                 sh 'docker build -t scientific-calculator .'
             }
         }
+       stage('Push Docker Image') {
+           steps {
+               sh 'docker tag scientific-calculator sivanilanka/scientific-calculator:latest'
+               sh 'docker push sivanilanka/scientific-calculator:latest'
+          }
+      }
 
     }
 }
