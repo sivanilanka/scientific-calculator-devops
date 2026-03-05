@@ -30,6 +30,13 @@ pipeline {
                sh 'docker push sivanilanka/scientific-calculator:latest'
           }
       }
+      stage('Deploy Container') {
+    steps {
+        sh 'docker stop scientific-calculator || true'
+        sh 'docker rm scientific-calculator || true'
+        sh 'docker run -d --name scientific-calculator -p 8081:8080 sivanilanka/scientific-calculator:latest'
+    }
+}
 
     }
 }
