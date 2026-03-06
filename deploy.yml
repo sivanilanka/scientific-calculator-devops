@@ -13,4 +13,4 @@
       ignore_errors: yes
 
     - name: Run container
-      command: docker run -d --name scientific-calculator -p 8081:8080 sivanilanka/scientific-calculator:latest
+      command: docker run -dit --name scientific-calculator -p 8081:8080 sivanilanka/scientific-calculator:latest
