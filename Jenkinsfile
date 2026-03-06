@@ -7,36 +7,50 @@ pipeline {
 
     stages {
 
-        stage('Clone Repository') {
+        stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/sivanilanka/scientific-calculator-devops.git'
             }
         }
 
-        stage('Build Project') {
+        stage('Build') {
             steps {
                 sh 'mvn clean package'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Containerize Application') {
             steps {
                 sh 'docker build -t scientific-calculator .'
             }
         }
-       stage('Push Docker Image') {
-           steps {
-               sh 'docker tag scientific-calculator sivanilanka/scientific-calculator:latest'
-               sh 'docker push sivanilanka/scientific-calculator:latest'
-          }
-      }
-      stage('Deploy Container') {
-    steps {
-        sh 'docker stop scientific-calculator || true'
-        sh 'docker rm scientific-calculator || true'
-        sh 'docker run -d --name scientific-calculator -p 8081:8080 sivanilanka/scientific-calculator:latest'
-    }
-}
 
+        stage('Push to Docker Hub') {
+            steps {
+                sh 'docker tag scientific-calculator sivanilanka/scientific-calculator:latest'
+                sh 'docker push sivanilanka/scientific-calculator:latest'
+            }
+        }
+
+        stage('Run Ansible Deployment') {
+            steps {
+                sh 'ansible-playbook -i hosts.ini deploy.yml'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully! The Scientific Calculator is deployed.'
+        }
+        failure {
+            echo 'Pipeline failed! Check logs.'
+        }
     }
 }
