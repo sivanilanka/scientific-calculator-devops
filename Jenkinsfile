@@ -46,11 +46,23 @@ pipeline {
     }
 
     post {
-        success {
-            echo 'Pipeline executed successfully! The Scientific Calculator is deployed.'
-        }
-        failure {
-            echo 'Pipeline failed! Check logs.'
-        }
+    success {
+        echo 'Pipeline executed successfully! The Scientific Calculator is deployed.'
+
+        emailext(
+            subject: "Build SUCCESS: ${env.JOB_NAME}",
+            body: "Build completed successfully.\nBuild Number: ${env.BUILD_NUMBER}",
+            to: "sivanireddylanka@gmail.com"
+        )
+    }
+
+    failure {
+        echo 'Pipeline failed! Check logs.'
+
+        emailext(
+            subject: "Build FAILED: ${env.JOB_NAME}",
+            body: "Build failed. Check Jenkins logs.\nBuild Number: ${env.BUILD_NUMBER}",
+            to: "sivanireddylanka@gmail.com"
+        )
     }
 }
